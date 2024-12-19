@@ -495,7 +495,9 @@ var oses = map[string]osCommon{
 		SyscallNumbers:         true,
 		SyscallPrefix:          "__NR_",
 		ExecutorUsesForkServer: true,
-		KernelObject:           "vmlinux",
+		KernelObject:           "",
+		ExecprogBin:            "/root/syzkaller/syz-execprog",
+		ExecutorBin:            "/root/syzkaller/syz-executor",
 		PseudoSyscallDeps: map[string][]string{
 			"syz_read_part_table": {"memfd_create"},
 			"syz_mount_image":     {"memfd_create"},

@@ -107,19 +107,26 @@ func (runner *Runner) Handshake(conn *flatrpc.Conn, cfg *handshakeConfig) error 
 		return err
 	}
 	infoReq, err := flatrpc.Recv[*flatrpc.InfoRequestRaw](conn)
+	log.Logf(0, "infoReq = %v", infoReq)
 	if err != nil {
 		return err
 	}
+	// log.Log(0, "Handshake(): skip Callback")
+
 	ret, err := cfg.Callback(infoReq)
+	log.Logf(0, "Handshake(): finish Callback, ret=%v, err=%v", ret, err)
 	if err != nil {
 		return err
 	}
 	infoReply := &flatrpc.InfoReply{
 		CoverFilter: ret.CovFilter,
 	}
+
+	// log.Log(0, "Handshake(): skip Send infoReply")
 	if err := flatrpc.Send(conn, infoReply); err != nil {
 		return err
 	}
+	log.Log(0, "Handshake(): Send fin")
 	runner.mu.Lock()
 	runner.conn = conn
 	runner.machineInfo = ret.MachineInfo
@@ -136,6 +143,7 @@ func (runner *Runner) Handshake(conn *flatrpc.Conn, cfg *handshakeConfig) error 
 }
 
 func (runner *Runner) ConnectionLoop() error {
+	// log.Logf(0, "ConnectionLoop(): ")
 	if runner.updInfo != nil {
 		runner.updInfo(func(info *dispatcher.Info) {
 			info.Status = "executing"
@@ -162,6 +170,8 @@ func (runner *Runner) ConnectionLoop() error {
 		}
 	}()
 	for {
+		// log.Logf(0, "ConnectionLoop(): loop start")
+		// log.Logf(0, "ConnectionLoop(): runner.requests=%v, runner.executing=%v, runner.procs=%v", runner.requests, runner.executing, runner.procs)
 		if infoc == nil {
 			select {
 			case infoc = <-runner.infoc:

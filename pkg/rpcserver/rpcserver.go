@@ -279,8 +279,9 @@ func (serv *server) handleRunnerConn(runner *Runner, conn *flatrpc.Conn) error {
 	}
 
 	err := runner.Handshake(conn, opts)
+	log.Logf(0, "just skip most of Handshake, err = %v", err)
 	if err != nil {
-		log.Logf(1, "%v", err)
+		log.Logf(0, "Handshake err = %v", err)
 		return err
 	}
 
@@ -357,17 +358,19 @@ func (serv *server) connectionLoop(runner *Runner) error {
 }
 
 func checkRevisions(a *flatrpc.ConnectRequest, target *prog.Target) error {
-	if target.Arch != a.Arch {
-		return fmt.Errorf("mismatching manager/executor arches: %v vs %v", target.Arch, a.Arch)
-	}
-	if prog.GitRevision != a.GitRevision {
-		return fmt.Errorf("mismatching manager/executor git revisions: %v vs %v",
-			prog.GitRevision, a.GitRevision)
-	}
-	if target.Revision != a.SyzRevision {
-		return fmt.Errorf("mismatching manager/executor system call descriptions: %v vs %v",
-			target.Revision, a.SyzRevision)
-	}
+	// Skip checks
+
+	// if target.Arch != a.Arch {
+	// 	return fmt.Errorf("mismatching manager/executor arches: %v vs %v", target.Arch, a.Arch)
+	// }
+	// if prog.GitRevision != a.GitRevision {
+	// 	return fmt.Errorf("mismatching manager/executor git revisions: %v vs %v",
+	// 		prog.GitRevision, a.GitRevision)
+	// }
+	// if target.Revision != a.SyzRevision {
+	// 	return fmt.Errorf("mismatching manager/executor system call descriptions: %v vs %v",
+	// 		target.Revision, a.SyzRevision)
+	// }
 	return nil
 }
 

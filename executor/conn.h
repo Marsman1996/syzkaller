@@ -80,6 +80,7 @@ private:
 	{
 		for (size_t recv = 0; recv < size;) {
 			ssize_t n = read(fd_, static_cast<char*>(data) + recv, size - recv);
+			perror("Recv read");
 			if (n > 0) {
 				recv += n;
 				continue;
@@ -99,6 +100,7 @@ private:
 		int port = atoi(ports);
 		bool localhost = !strcmp(addr, "localhost");
 		int fd;
+		debug("addr:port = %s:%d\n", addr, port);
 		if (!strcmp(addr, "stdin"))
 			return STDIN_FILENO;
 		if (port == 0)
@@ -153,6 +155,7 @@ private:
 		}
 		char str[128] = {};
 		inet_ntop(saddr->sa_family, ip, str, sizeof(str));
+		debug("addr:port = %s:%d\n", saddr->sa_data, port);
 		int retcode = connect(fd, saddr, sizeof(*addr));
 		while (retcode == -1 && errno == EINTR)
 			retcode = ConnectWait(fd);

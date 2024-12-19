@@ -134,10 +134,10 @@ var archConfigs = map[string]*archConfig{
 		// But other arches don't use e1000e, e.g. arm64 uses virtio by default.
 		NetDev: "e1000",
 		RngDev: "virtio-rng-pci",
-		CmdLine: []string{
-			"root=/dev/sda",
-			"console=ttyS0",
-		},
+		// CmdLine: []string{
+		// 	"root=/dev/sda",
+		// 	"console=ttyS0",
+		// },
 	},
 	"linux/386": {
 		Qemu:   "qemu-system-i386",
@@ -503,7 +503,7 @@ func (inst *instance) buildQemuArgs() ([]string, error) {
 	templateDir := filepath.Join(inst.workdir, "template")
 	args = append(args, splitArgs(inst.cfg.QemuArgs, templateDir, inst.index)...)
 	args = append(args,
-		"-device", inst.cfg.NetDev+",netdev=net0",
+		"-device", inst.cfg.NetDev+",netdev=net0,disable-legacy=on,disable-modern=off",
 		"-netdev", fmt.Sprintf("user,id=net0,restrict=on,hostfwd=tcp:127.0.0.1:%v-:22", inst.port),
 	)
 	if inst.image == "9p" {

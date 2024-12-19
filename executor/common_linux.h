@@ -5156,8 +5156,9 @@ static void setup_sysctl()
 		}
 	}
 	kill(cad_pid, SIGKILL);
-	while (waitpid(cad_pid, NULL, 0) != cad_pid)
-		;
+	debug("waitpid not implemented in Asterinas");
+	// while (waitpid(cad_pid, NULL, 0) != cad_pid)
+	// 	;
 }
 #endif
 
@@ -5814,7 +5815,7 @@ static const char* setup_swap()
 	// Set up the swap file.
 	char cmdline[64];
 	sprintf(cmdline, "mkswap %s", SWAP_FILE);
-	if (runcmdline(cmdline))
+	// if (runcmdline(cmdline))
 		return "mkswap failed";
 	if (swapon(SWAP_FILE, SWAP_FLAG_PREFER) == 1)
 		return "swapon failed";

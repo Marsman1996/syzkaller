@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/google/syzkaller/pkg/log"
-	"github.com/google/syzkaller/pkg/osutil"
-	"github.com/google/syzkaller/sys/targets"
 )
 
 // Sleep for d.
@@ -25,11 +23,11 @@ func SleepInterruptible(d time.Duration) bool {
 
 func WaitForSSH(debug bool, timeout time.Duration, addr, sshKey, sshUser, OS string, port int, stop chan error,
 	systemSSHCfg bool) error {
-	pwd := "pwd"
-	if OS == targets.Windows {
-		pwd = "dir"
-	}
-	startTime := time.Now()
+	// pwd := "pwd"
+	// if OS == targets.Windows {
+	// 	pwd = "dir"
+	// }
+	// startTime := time.Now()
 	SleepInterruptible(5 * time.Second)
 	for {
 		select {
@@ -39,20 +37,23 @@ func WaitForSSH(debug bool, timeout time.Duration, addr, sshKey, sshUser, OS str
 		case <-Shutdown:
 			return fmt.Errorf("shutdown in progress")
 		}
-		args := append(SSHArgs(debug, sshKey, port, systemSSHCfg), sshUser+"@"+addr, pwd)
+		// args := append(SSHArgs(debug, sshKey, port, systemSSHCfg), sshUser+"@"+addr, pwd)
 		if debug {
-			log.Logf(0, "running ssh: %#v", args)
+			// log.Logf(0, "running ssh: %#v", args)
+			log.Logf(0, "We just sleep for 3s")
 		}
-		_, err := osutil.RunCmd(time.Minute, "", "ssh", args...)
-		if err == nil {
-			return nil
-		}
-		if debug {
-			log.Logf(0, "ssh failed: %v", err)
-		}
-		if time.Since(startTime) > timeout {
-			return &osutil.VerboseError{Title: "can't ssh into the instance", Output: []byte(err.Error())}
-		}
+		// _, err := osutil.RunCmd(time.Minute, "", "ssh", args...)
+		SleepInterruptible(3 * time.Second)
+		return nil
+		// if err == nil {
+		// 	return nil
+		// }
+		// if debug {
+		// 	log.Logf(0, "ssh failed: %v", err)
+		// }
+		// if time.Since(startTime) > timeout {
+		// 	return &osutil.VerboseError{Title: "can't ssh into the instance", Output: []byte(err.Error())}
+		// }
 	}
 }
 

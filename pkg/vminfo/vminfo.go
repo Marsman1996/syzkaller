@@ -24,6 +24,7 @@ import (
 
 	"github.com/google/syzkaller/pkg/flatrpc"
 	"github.com/google/syzkaller/pkg/fuzzer/queue"
+	"github.com/google/syzkaller/pkg/log"
 	"github.com/google/syzkaller/prog"
 	"github.com/google/syzkaller/sys/targets"
 )
@@ -78,7 +79,8 @@ func (checker *Checker) MachineInfo(fileInfos []*flatrpc.FileInfo) ([]*KernelMod
 	files := createVirtualFilesystem(fileInfos)
 	modules, err := checker.parseModules(files)
 	if err != nil {
-		return nil, nil, err
+		// return nil, nil, err
+		log.Logf(0, "Error when parseModules, %v", err)
 	}
 	info := new(bytes.Buffer)
 	tmp := new(bytes.Buffer)

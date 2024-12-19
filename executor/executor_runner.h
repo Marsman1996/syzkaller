@@ -539,7 +539,9 @@ public:
 	    : conn_(conn),
 	      vm_index_(vm_index)
 	{
+		debug("start Runner\n");
 		int num_procs = Handshake();
+		debug("finish Handshake, num_procs=%d\n", num_procs);
 		proc_id_pool_.emplace(num_procs);
 		int max_signal_fd = max_signal_ ? max_signal_->FD() : -1;
 		int cover_filter_fd = cover_filter_ ? cover_filter_->FD() : -1;
@@ -700,6 +702,7 @@ private:
 		conn_.Send(info_req);
 
 		rpc::InfoReplyRawT info_reply;
+		// Below may need to comment
 		conn_.Recv(info_reply);
 		debug("received info reply: covfilter=%zu\n", info_reply.cover_filter.size());
 		if (!info_reply.cover_filter.empty()) {
@@ -707,6 +710,7 @@ private:
 			for (auto pc : info_reply.cover_filter)
 				cover_filter_->Insert(pc);
 		}
+		// Above may need to comment
 
 		Select::Prepare(conn_.FD());
 		return conn_reply.procs;
